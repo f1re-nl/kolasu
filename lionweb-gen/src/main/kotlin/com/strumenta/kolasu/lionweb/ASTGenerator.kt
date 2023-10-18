@@ -16,7 +16,7 @@ import com.strumenta.kolasu.model.NodeType
 import com.strumenta.kolasu.model.ReferenceByName
 import io.lionweb.lioncore.java.language.Classifier
 import io.lionweb.lioncore.java.language.Concept
-import io.lionweb.lioncore.java.language.ConceptInterface
+import io.lionweb.lioncore.java.language.Interface
 import io.lionweb.lioncore.java.language.Containment
 import io.lionweb.lioncore.java.language.DataType
 import io.lionweb.lioncore.java.language.Enumeration
@@ -94,7 +94,7 @@ class ASTGenerator(val packageName: String, val language: LWLanguage) {
                     }
                     fileSpecBuilder.addType(typeSpec.build())
                 }
-                is ConceptInterface -> {
+                is Interface -> {
                     val typeSpec = TypeSpec.interfaceBuilder(element.name!!)
                     typeSpec.addAnnotation(
                         AnnotationSpec.builder(LionWebAssociation::class.java)

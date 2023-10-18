@@ -9,15 +9,9 @@ import com.strumenta.kolasu.model.Named
 import com.strumenta.kolasu.model.Node
 import com.strumenta.kolasu.model.declaredFeatures
 import com.strumenta.kolasu.model.isConcept
-import com.strumenta.kolasu.model.isConceptInterface
+import com.strumenta.kolasu.model.isInterface
 import com.strumenta.kolasu.model.isMarkedAsNodeType
-import io.lionweb.lioncore.java.language.Classifier
-import io.lionweb.lioncore.java.language.Concept
-import io.lionweb.lioncore.java.language.ConceptInterface
-import io.lionweb.lioncore.java.language.DataType
-import io.lionweb.lioncore.java.language.Enumeration
-import io.lionweb.lioncore.java.language.LionCoreBuiltins
-import io.lionweb.lioncore.java.language.Property
+import io.lionweb.lioncore.java.language.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
@@ -53,11 +47,11 @@ class LionWebLanguageConverter {
                 concept.id = lionwebLanguage.id + "_" + concept.name
                 concept.isAbstract = astClass.isAbstract || astClass.isSealed
                 registerMapping(astClass, concept)
-            } else if (astClass.isConceptInterface) {
-                val conceptInterface = ConceptInterface(lionwebLanguage, astClass.simpleName)
-                conceptInterface.key = lionwebLanguage.key + "_" + conceptInterface.name
-                conceptInterface.id = lionwebLanguage.id + "_" + conceptInterface.name
-                registerMapping(astClass, conceptInterface)
+            } else if (astClass.isInterface) {
+                val iface = Interface(lionwebLanguage, astClass.simpleName)
+                iface.key = lionwebLanguage.key + "_" + iface.name
+                iface.id = lionwebLanguage.id + "_" + iface.name
+                registerMapping(astClass, iface)
             }
         }
 
@@ -66,11 +60,11 @@ class LionWebLanguageConverter {
             val featuresContainer = astClassesAndClassifiers.byA(astClass)
 
             if (astClass.java.isInterface) {
-                val conceptInterface = featuresContainer as ConceptInterface
+                val iface = featuresContainer as Interface
                 val superInterfaces = astClass.supertypes.map { it.classifier as KClass<*> }
                     .filter { it.java.isInterface }
                 superInterfaces.filter { it.isMarkedAsNodeType() }.forEach {
-                    conceptInterface.addExtendedInterface(correspondingConceptInterface(it))
+                    iface.addExtendedInterface(correspondingInterface(it))
                 }
             } else {
                 val concept = featuresContainer as Concept
@@ -83,7 +77,7 @@ class LionWebLanguageConverter {
                 }
                 val interfaces = astClass.supertypes.map { it.classifier as KClass<*> }.filter { it.java.isInterface }
                 interfaces.filter { it.isMarkedAsNodeType() }.forEach {
-                    concept.addImplementedInterface(correspondingConceptInterface(it))
+                    concept.addImplementedInterface(correspondingInterface(it))
                 }
             }
             astClass.declaredFeatures().forEach {
@@ -188,8 +182,8 @@ class LionWebLanguageConverter {
         return classesAndEnumerations.asToBsMap
     }
 
-    fun correspondingConceptInterface(kClass: KClass<*>): ConceptInterface {
-        return toLWClassifier(kClass) as ConceptInterface
+    fun correspondingInterface(kClass: KClass<*>): Interface {
+        return toLWClassifier(kClass) as Interface
     }
 
     fun correspondingConcept(kClass: KClass<*>): Concept {

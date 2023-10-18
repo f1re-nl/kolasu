@@ -152,7 +152,7 @@ fun KClass<*>.isANode(): Boolean {
 val KClass<*>.isConcept: Boolean
     get() = isANode() && !this.java.isInterface
 
-val KClass<*>.isConceptInterface: Boolean
+val KClass<*>.isInterface: Boolean
     get() = isANode() && this.java.isInterface
 
 /**
