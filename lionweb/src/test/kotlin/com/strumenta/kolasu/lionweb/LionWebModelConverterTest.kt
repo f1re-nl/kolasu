@@ -259,7 +259,7 @@ class LionWebModelConverterTest {
             addClass(SimpleRoot::class)
         }
         mConverter.exportLanguageToLionWeb(kLanguage)
-        val lwAST = mConverter.unserializeToNodes(serialized).first()
+        val lwAST = mConverter.deserializeToNodes(serialized).first()
         val kAST = mConverter.importModelFromLionWeb(lwAST)
 
         val a1 = SimpleNodeA("A1", ReferenceByName("A1"), null)
